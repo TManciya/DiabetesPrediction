@@ -1,4 +1,4 @@
-iimport streamlit as st
+import streamlit as st
 import pickle
 import numpy as np
 import os
@@ -68,6 +68,7 @@ if predict_clicked:
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
         st.write(f"Error type: {type(e).__name__}")
+
 
 
 
