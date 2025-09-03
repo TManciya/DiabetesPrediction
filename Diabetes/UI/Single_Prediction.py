@@ -6,51 +6,42 @@ import os
 st.title("Welcome to Diabetes Test")
 st.header("Please fill in your details")
 
+# Input fields
 preg = st.number_input("Enter Pregnancies", 0, 10, 5)
-glucose = st.number_input("Enter glucose level", 0, 200)
-blood_pressure = st.number_input("Enter blood pressure", 0, 200)
-skin = st.number_input("Enter skin thickness", 0, 200)
-insulin = st.number_input("Enter insulin level", 0, 200)
-bmi = st.number_input("Enter bmi", 0, 200)
-pedigreefn = st.number_input("Enter DiabetesPedigreeFunction", 0, 200)
-age = st.slider('Select your age:', 0, 100, 25)
+glucose = st.number_input("Enter Glucose level", 0, 200)
+blood_pressure = st.number_input("Enter Blood Pressure", 0, 200)
+skin = st.number_input("Enter Skin Thickness", 0, 200)
+insulin = st.number_input("Enter Insulin level", 0, 200)
+bmi = st.number_input("Enter BMI", 0, 200)
+pedigreefn = st.number_input("Enter Diabetes Pedigree Function", 0, 200)
+age = st.slider("Select your Age", 0, 100, 25)
 
-# Create a button to predict output
-predict_clicked = st.button("Get the prediction")
-
-if predict_clicked:
+# Button to predict
+if st.button("Get the prediction"):
     try:
-        # Use relative path - model.pkl should be in the same directory as your script
-        # or adjust the path based on your repository structure
-        with open("model.pkl", 'rb') as file:
-            model = pickle.load(file)
-        
-        # Load the test data into numpy array
+        # Always resolve path relative to this script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(script_dir, "model.pkl")
+
+        with open(model_path, "rb") as f:
+            model = pickle.load(f)
+
+        # Prepare data
         data = np.array([[preg, glucose, blood_pressure, skin, insulin, bmi, pedigreefn, age]])
-        
-        # Call the model to predict
+
+        # Predict
         result = model.predict(data)
-        
+
         if result[0] == 1:
-            result_string = "Diabetic"
-            st.error("The outcome for your diabetes test is " + result_string)
+            st.error("The outcome for your diabetes test is: Diabetic")
         else:
-            result_string = "Non-Diabetic"
-            st.success("The outcome for your diabetes test is " + result_string)
-            
+            st.success("The outcome for your diabetes test is: Non-Diabetic")
+
     except FileNotFoundError:
-        st.error("❌ Model file not found. Please check if 'model.pkl' is in your repository.")
-        # Debug: Show what files are available
-        st.write("Available files in current directory:")
-        try:
-            files = os.listdir(".")
-            for file in files:
-                st.write(f"- {file}")
-        except:
-            st.write("Could not list directory contents")
-            
+        st.error(f"❌ model.pkl not found at {model_path}. Please check your repository.")
     except Exception as e:
-        st.error(f"An error occurred: {str(e)}")
+        st.error(f"⚠️ An error occurred while making prediction: {e}")
+
 
 
 
