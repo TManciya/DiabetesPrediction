@@ -20,13 +20,9 @@ predict_clicked = st.button("Get the prediction")
 
 if predict_clicked:
     try:
-        # Since your file is in UI folder, you need to go up one level then into Model_Development
-        model_path = "../Model_Development/model.pkl"
-        
-        # Alternative: Use os.path.join for cross-platform compatibility
-        # model_path = os.path.join("..", "Model_Development", "model.pkl")
-        
-        with open(model_path, 'rb') as file:
+        # Use relative path - model.pkl should be in the same directory as your script
+        # or adjust the path based on your repository structure
+        with open("model.pkl", 'rb') as file:
             model = pickle.load(file)
         
         # Load the test data into numpy array
@@ -43,31 +39,19 @@ if predict_clicked:
             st.success("The outcome for your diabetes test is " + result_string)
             
     except FileNotFoundError:
-        st.error("❌ Model file not found.")
-        # Debug information
-        st.write("Current working directory:", os.getcwd())
-        st.write("Looking for model at:", os.path.abspath("../Model_Development/model.pkl"))
-        
-        # Show directory contents for debugging
-        st.write("Contents of parent directory:")
+        st.error("❌ Model file not found. Please check if 'model.pkl' is in your repository.")
+        # Debug: Show what files are available
+        st.write("Available files in current directory:")
         try:
-            parent_files = os.listdir("..")
-            for item in parent_files:
-                st.write(f"- {item}")
-                if os.path.isdir(f"../{item}"):
-                    st.write(f"  Contents of {item}:")
-                    try:
-                        sub_files = os.listdir(f"../{item}")
-                        for sub_item in sub_files:
-                            st.write(f"    - {sub_item}")
-                    except:
-                        st.write("    Could not read directory")
-        except Exception as e:
-            st.write(f"Could not list parent directory: {e}")
+            files = os.listdir(".")
+            for file in files:
+                st.write(f"- {file}")
+        except:
+            st.write("Could not list directory contents")
             
     except Exception as e:
         st.error(f"An error occurred: {str(e)}")
-        st.write(f"Error type: {type(e).__name__}")
+
 
 
 
