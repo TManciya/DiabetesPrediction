@@ -1,7 +1,6 @@
 import streamlit as st
 import pickle
 import numpy as np
-import os
 
 st.title("Welcome to Diabetes Test")
 st.header("Please fill in your details")
@@ -19,26 +18,25 @@ age = st.slider("Select your Age", 0, 100, 25)
 # Button to predict
 if st.button("Get the prediction"):
     try:
-        # Load model.pkl (must be in same folder as this script)
+        # Load model.pkl (in the same folder as this script)
         with open("model.pkl", "rb") as f:
             model = pickle.load(f)
 
         # Prepare data
         data = np.array([[preg, glucose, blood_pressure, skin, insulin, bmi, pedigreefn, age]])
 
-        # Make prediction
+        # Predict
         result = model.predict(data)
 
-        # Show result
         if result[0] == 1:
             st.error("The outcome for your diabetes test is: Diabetic")
         else:
             st.success("The outcome for your diabetes test is: Non-Diabetic")
 
     except FileNotFoundError:
-        st.error("Model file not found. Please make sure model.pkl is in the same folder as this script.")
+        st.error("❌ model.pkl not found in the same folder. Please check your repository.")
     except Exception as e:
-        st.error(f"An error occurred while making prediction: {e}")
+        st.error(f"⚠️ An error occurred while making prediction: {e}")
 
 
 
